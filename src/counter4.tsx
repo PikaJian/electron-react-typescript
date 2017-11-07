@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-class Counter4 extends React.Component<any, any> {
+class Counter extends React.Component<any, any> {
     render() {
         return (
             <div>
@@ -28,4 +28,4 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-export const CounterStateLess = connect(mapStateToProps, mapDispatchToProps)(Counter4)
+export const Counter4 = connect(mapStateToProps, mapDispatchToProps)(Counter)

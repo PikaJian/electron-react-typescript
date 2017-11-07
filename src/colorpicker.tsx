@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { connect } from "react-redux";
 
-export class NumberPicker extends React.Component<any, any> {
+class NumberPicker extends React.Component<any, any> {
     render() {
         return (
             <p>
@@ -17,7 +18,7 @@ export class NumberPicker extends React.Component<any, any> {
     }
 }
 
-export class ColorPicker extends React.Component<any, any> {
+class ColorPicker extends React.Component<any, any> {
     render() {
         const color = this.props.color;
         const rgb = hexToRgb(color);
@@ -44,13 +45,13 @@ export class ColorPicker extends React.Component<any, any> {
     updateGreen(n: number) {
         const rgb = hexToRgb(this.props.color);
         this.changeColor(rgbToHex(rgb.r, n, rgb.b));
-    }
-    updateBlue(n: number) {
+    } updateBlue(n: number) {
         const rgb = hexToRgb(this.props.color);
         this.changeColor(rgbToHex(rgb.r, rgb.g, n));
     }
     changeColor(color: string) {
-        this.props.onChange(color);  
+        //this.props.onChange(color);
+        this.props.setColor(color);
     }
 }
 
@@ -76,3 +77,18 @@ const luminance = (color: string) => {
 };
 
 export const isDark = (color: string) => luminance(color) < 100;
+
+/* export const ColorPickers = connect(
+    (state, props) => ({ color: state.color }),
+    (dispatch) => ({ setColor: (color) => dispatch({ type:'COLOR_CHANGE', color })})
+)(ColorPicker); */
+
+const mapStateToProps = (state, props) => ({ color: state.color });
+
+const mapDispatchToProps = (dispatch) => ({
+    setColor: (color) => {
+        dispatch({ type: 'COLOR_CHANGE', color});
+    }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ColorPicker)
