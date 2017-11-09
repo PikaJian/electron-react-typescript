@@ -1,3 +1,5 @@
 node_modules
 dist
 npm-debug.log
+*.css.d.ts
+*.scss.d.ts

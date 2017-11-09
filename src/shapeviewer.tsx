@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { isDark } from './colorpicker';
+import * as styles from './test.css';
 
 class ShapeViewer extends React.Component<any, any> {
     constructor(props?, context?) {
@@ -20,7 +21,7 @@ class ShapeViewer extends React.Component<any, any> {
                     onMouseUp={e => this.setState({ isDragging: false }) }
                     onMouseOut={e => this.setState({ isDragging: false }) }
                     onMouseMove={e => this.handleDrag(s.id, s.height, s.width, e) }>
-                    ({s.top},{s.left})
+                    <div className={styles.unselectable}>({s.top},{s.left})</div>
                 </div>)
             )}
             </div>

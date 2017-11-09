@@ -1,5 +1,8 @@
 const webpack = require('webpack');
+//auto insert module
 const HtmlPlugin = require('html-webpack-plugin');
+//ouput css to files
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
 const glob = require("glob");
 module.exports = {
@@ -25,6 +28,25 @@ module.exports = {
   },
   module: {
     rules: [
+
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: [
+            {
+              loader :"typings-for-css-modules-loader",
+              options: {
+                modules: true,
+                namedExport: true,
+                camelCase: true,
+                minimize: true,
+                localIdentName: "[local]_[hash:base64:5]"
+              }
+            }
+          ]
+        })
+      },
       {
         test: /\.tsx$/,
         use: [
@@ -37,7 +59,7 @@ module.exports = {
           },
         ]
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
   },
   // When importing a module whose path matches one of the following, just
@@ -52,6 +74,7 @@ module.exports = {
     }),
     new webpack.optimize.CommonsChunkPlugin(
       {name : 'vendors', filename : 'vendors.js'}),
+    new ExtractTextPlugin("styles.css"),
   ],
   devServer: {
     historyApiFallback: true, // 404将会重定向至index.html
