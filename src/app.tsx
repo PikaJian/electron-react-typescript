@@ -12,6 +12,20 @@ import ColorPicker from "./colorpicker";
 import ShapeMaker from './shapemaker';
 import ShapeViewer from './shapeviewer';
 import ActionPlayer from './actionplayer';
+import reducers from './reducers';
+import History from './history';
+import $ from 'jquery';
+
+$( document ).ready(function() {
+    $( 'body' ).append("<div id='content'>")
+    $( 'body' ).append("<div id='content1'>")
+    $( 'body' ).append("<div id='content2'>")
+    $( 'body' ).append("<div id='content3'>")
+    $( 'body' ).append("<div id='content4'>")
+    $( 'body' ).append("<div id='content5'>")
+    $( 'body' ).append("<div id='content6'>")
+    start_render();
+});
 
 let store = createStore(
     (state, action) => {
@@ -63,6 +77,41 @@ let store3 = createStore(
     },
     defaultState);
 
+var history = {
+    states: [],
+    stateIndex: 0,
+    reset() {
+        this.states = [];
+        this.stateIndex = -1;
+    },
+    prev() { return this.states[--this.stateIndex]; },
+    next() { return this.states[++this.stateIndex]; },
+    goTo(index) { return this.states[this.stateIndex=index]; },
+    canPrev() { return this.stateIndex <= 0; },
+    canNext() { return this.stateIndex >= this.states.length - 1; },
+    pushState(nextState) {
+        this.states.push(nextState);
+        this.stateIndex = this.states.length - 1;
+    }
+};
+
+let store4 = createStore(
+    (state, action) => {
+        var reducer = reducers[action.type];
+        var nextState = reducer != null
+            ? reducer(state, action)
+            : state;
+
+        if (action.type !== 'LOAD')
+         {
+             history.pushState(nextState);
+             console.log(history);
+         }
+
+        return nextState;
+    },
+    defaultState);
+
 /* class ColorWrapperBase extends React.Component<any,any> {
     render() {
         return <ColorPicker color={this.props.color} onChange={this.props.setColor} />;
@@ -73,46 +122,79 @@ const ColorWrapper = connect(
     (state) => ({ color: state.color }),
     (dispatch) => ({ setColor: (color) => dispatch({ type:'COLOR_CHANGE', color })})
 )(ColorWrapperBase); */
+let start_render = () => {
 
-ReactDOM.render(<HelloWorld/>, document.getElementById("content"));
-ReactDOM.render(<Counter/>, document.getElementById("content1"));
-ReactDOM.render(<Counter2/>, document.getElementById("content2"));
-ReactDOM.render(
-<Provider store={store}>
-  <Counter3 />
-</Provider>,
-document.getElementById("content3"));
-ReactDOM.render(
-<Provider store={store2}>
-  <Counter4 />
-</Provider>,
-document.getElementById("content4"));
-ReactDOM.render(
-<Provider store={store3}>
-        <table>
-            <tbody>
-            <tr>
-                <td style={{ width: 220 }}>
-                    <Counter5 field="width" step={10} />
-                    <Counter5 field="height" step={10} />
-                    {/* <ColorWrapper /> */}
-                    <ColorPicker />
-                </td>
-                <td style={{verticalAlign:"top", textAlign:"center", width:500}}>
-                    <h2>Preview</h2>
-                    <ShapeMaker />
-                </td>
-                <td style={{ verticalAlign: 'bottom' }}>
-                    <ActionPlayer store={store3} actions={actions} defaultState={defaultState} />
-                </td>
-            </tr>
-            <tr>
-                <td colSpan={3}>
-                    <h2 style={{margin:5,textAlign:'center'}}>Shapes</h2>
-                    <ShapeViewer />
-                </td>
-            </tr>
-            </tbody>
-        </table>
-</Provider>,
-document.getElementById("content5"));
+    ReactDOM.render(<HelloWorld />, document.getElementById("content"));
+    ReactDOM.render(<Counter />, document.getElementById("content1"));
+    ReactDOM.render(<Counter2 />, document.getElementById("content2"));
+    ReactDOM.render(
+        <Provider store={store}>
+            <Counter3 />
+        </Provider>,
+        document.getElementById("content3"));
+    ReactDOM.render(
+        <Provider store={store2}>
+            <Counter4 />
+        </Provider>,
+        document.getElementById("content4"));
+    ReactDOM.render(
+        <Provider store={store3}>
+            <table>
+                <tbody>
+                    <tr>
+                        <td style={{ width: 220 }}>
+                            <Counter5 field="width" step={10} />
+                            <Counter5 field="height" step={10} />
+                            {/* <ColorWrapper /> */}
+                            <ColorPicker />
+                        </td>
+                        <td style={{ verticalAlign: "top", textAlign: "center", width: 500 }}>
+                            <h2>Preview</h2>
+                            <ShapeMaker />
+                        </td>
+                        <td style={{ verticalAlign: 'bottom' }}>
+                            <ActionPlayer store={store3} actions={actions} defaultState={defaultState} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={3}>
+                            <h2 style={{ margin: 5, textAlign: 'center' }}>Shapes</h2>
+                            <ShapeViewer />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </Provider>,
+        document.getElementById("content5"));
+
+    ReactDOM.render(
+        <Provider store={store4}>
+            <table>
+                <tbody>
+                    <tr>
+                        <td style={{ width: 220 }}>
+                            <Counter5 field="width" step={10} />
+                            <Counter5 field="height" step={10} />
+                            {/* <ColorWrapper /> */}
+                            <ColorPicker />
+                        </td>
+                        <td style={{ verticalAlign: "top", textAlign: "center", width: 500 }}>
+                            <h2>Preview</h2>
+                            <ShapeMaker />
+                        </td>
+                        <td style={{ verticalAlign: "top" }}>
+                            <h2>History</h2>
+                            <History store={store4} history={history} defaultState={defaultState} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={3}>
+                            <h2 style={{ margin: 5, textAlign: 'center' }}>Shapes</h2>
+                            <ShapeViewer />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </Provider>,
+        document.getElementById("content6"));
+}

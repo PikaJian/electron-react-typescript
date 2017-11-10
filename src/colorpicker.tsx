@@ -6,13 +6,13 @@ class NumberPicker extends React.Component<any, any> {
         return (
             <p>
                 <input type="range" value={this.props.value.toString() } min="0" max="255"
-                    onChange={e => this.handleChange(e) } />
+                    onChange={this.handleChange} />
                 <label> {this.props.name}: </label>
                 <b>{ this.props.value }</b>
             </p>
         );
     }
-    handleChange(event) {
+    handleChange = (event) => {
         const e = event.target as HTMLInputElement;
         this.props.onChange(parseInt(e.value));
     }
@@ -26,9 +26,9 @@ class ColorPicker extends React.Component<any, any> {
 
         return (
             <div>
-                <NumberPicker name="Red" value={rgb.r} onChange={n => this.updateRed(n)} />
-                <NumberPicker name="Green" value={rgb.g} onChange={n => this.updateGreen(n) } />
-                <NumberPicker name="Blue" value={rgb.b} onChange={n => this.updateBlue(n) } />
+                <NumberPicker name="Red" value={rgb.r} onChange={this.updateRed} />
+                <NumberPicker name="Green" value={rgb.g} onChange={this.updateGreen} />
+                <NumberPicker name="Blue" value={rgb.b} onChange={this.updateBlue} />
                 <div style={{
                     background: color, width: "100%", height: 40, lineHeight: "40px",
                     textAlign: "center", color: textColor
@@ -38,18 +38,19 @@ class ColorPicker extends React.Component<any, any> {
             </div>
         );
     }
-    updateRed(n: number) {
+    updateRed = (n: number) => {
         const rgb = hexToRgb(this.props.color);
         this.changeColor(rgbToHex(n, rgb.g, rgb.b));
     }
-    updateGreen(n: number) {
+    updateGreen = (n: number) => {
         const rgb = hexToRgb(this.props.color);
         this.changeColor(rgbToHex(rgb.r, n, rgb.b));
-    } updateBlue(n: number) {
+    } 
+    updateBlue = (n: number) => {
         const rgb = hexToRgb(this.props.color);
         this.changeColor(rgbToHex(rgb.r, rgb.g, n));
     }
-    changeColor(color: string) {
+    changeColor = (color: string) => {
         //this.props.onChange(color);
         this.props.setColor(color);
     }
