@@ -59,7 +59,21 @@ module.exports = {
           },
         ]
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+      {
+        test: /\.pug$/,
+        use: [
+          'html-loader',
+          {
+            loader: 'pug-html-loader',
+            options: {
+              pretty: true,
+              exports: false,
+              doctype: 'html'
+            }
+          }
+        ]
+      },
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
     ]
   },
   // When importing a module whose path matches one of the following, just
@@ -70,7 +84,8 @@ module.exports = {
   plugins: [
     new HtmlPlugin({
       // 指定index.html的模板文件路径
-      template: path.resolve(__dirname, './dist/index.html')
+      template: 'src/index.pug',
+      filename: 'index.html',
     }),
     new webpack.optimize.CommonsChunkPlugin(
       {name : 'vendors', filename : 'vendors.js'}),
